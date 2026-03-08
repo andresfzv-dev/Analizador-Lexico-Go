@@ -1,5 +1,11 @@
 import { AnalizadorLexico } from './AnalizadorLexico.js';
 
+/**
+ * Clase principal de la aplicación que maneja la interfaz de usuario
+ * y coordina el análisis léxico.
+ * 
+ * @class Aplicacion
+ */
 class Aplicacion {
     constructor() {
         this.analizador = new AnalizadorLexico();
@@ -9,26 +15,50 @@ class Aplicacion {
         this.cargarCodigoEjemplo();
     }
 
+    /**
+     * Inicializa referencias a elementos del DOM
+     * @private
+     */
     inicializarElementos() {
+        // Elementos del editor
         this.entradaCodigo = document.getElementById('codeInput');
         this.contadorLineas = document.getElementById('lineCount');
         this.contadorCaracteres = document.getElementById('charCount');
+
+        // Botones
         this.btnAnalizar = document.getElementById('analyzeBtn');
         this.btnLimpiar = document.getElementById('clearBtn');
+
+        // Elementos de resultados
         this.cuerpoTokens = document.getElementById('tokensBody');
         this.contenedorErrores = document.getElementById('errorContainer');
         this.contenedorEstadisticas = document.getElementById('statsContainer');
         this.filtroCategoria = document.getElementById('filterCategory');
+
+        // Elementos de estadísticas
         this.totalTokens = document.getElementById('totalTokens');
         this.totalErrores = document.getElementById('totalErrors');
         this.totalCategorias = document.getElementById('totalCategories');
     }
 
+    /**
+     * Adjunta event listeners a los elementos
+     * @private
+     */
     adjuntarEventListeners() {
+        // Evento de análisis
         this.btnAnalizar.addEventListener('click', () => this.manejarAnalisis());
+
+        // Evento de limpiar
         this.btnLimpiar.addEventListener('click', () => this.manejarLimpiar());
+
+        // Evento de cambio en el editor
         this.entradaCodigo.addEventListener('input', () => this.actualizarInfoEditor());
+
+        // Evento de filtro de categorías
         this.filtroCategoria.addEventListener('change', () => this.aplicarFiltro());
+
+        // Permitir análisis con Ctrl+Enter
         this.entradaCodigo.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 e.preventDefault();
@@ -37,7 +67,10 @@ class Aplicacion {
         });
     }
 
-
+    /**
+     * Carga código de ejemplo al iniciar
+     * @private
+     */
     cargarCodigoEjemplo() {
         const codigoEjemplo = `package main
 
@@ -81,6 +114,10 @@ func main() {
         this.actualizarInfoEditor();
     }
 
+    /**
+     * Actualiza la información del editor (líneas y caracteres)
+     * @private
+     */
     actualizarInfoEditor() {
         const texto = this.entradaCodigo.value;
         const lineas = texto.split('\n').length;
@@ -90,6 +127,10 @@ func main() {
         this.contadorCaracteres.textContent = `Caracteres: ${caracteres}`;
     }
 
+    /**
+     * Maneja el evento de análisis
+     * @private
+     */
     manejarAnalisis() {
         const codigoFuente = this.entradaCodigo.value;
 
@@ -98,9 +139,11 @@ func main() {
             return;
         }
 
+        // Deshabilitar botón durante análisis
         this.btnAnalizar.disabled = true;
         this.btnAnalizar.textContent = 'Analizando...';
 
+        // Simular un pequeño delay para mejor UX
         setTimeout(() => {
             const resultado = this.analizador.analizar(codigoFuente);
             this.tokensActuales = resultado.tokens;
@@ -111,6 +154,10 @@ func main() {
         }, 100);
     }
 
+    /**
+     * Maneja el evento de limpiar
+     * @private
+     */
     manejarLimpiar() {
         if (confirm('¿Estás seguro de que deseas limpiar el editor?')) {
             this.entradaCodigo.value = '';
@@ -120,12 +167,22 @@ func main() {
         }
     }
 
+    /**
+     * Muestra los resultados del análisis
+     * @private
+     * @param {Object} resultado - Resultado del análisis léxico
+     */
     mostrarResultados(resultado) {
         this.mostrarTokens(resultado.tokens);
         this.mostrarErrores(resultado.errores);
         this.mostrarEstadisticas(resultado.estadisticas);
     }
 
+    /**
+     * Muestra los tokens en la tabla
+     * @private
+     * @param {Array} tokens - Lista de tokens
+     */
     mostrarTokens(tokens) {
         this.cuerpoTokens.innerHTML = '';
 
@@ -140,6 +197,12 @@ func main() {
         });
     }
 
+    /**
+     * Crea una fila de la tabla para un token
+     * @private
+     * @param {Object} token - Token a mostrar
+     * @returns {HTMLTableRowElement}
+     */
     crearFilaToken(token) {
         const fila = document.createElement('tr');
         
@@ -160,6 +223,12 @@ func main() {
         return fila;
     }
 
+    /**
+     * Obtiene la clase CSS para una categoría
+     * @private
+     * @param {string} categoria - Categoría del token
+     * @returns {string}
+     */
     obtenerClaseCategoria(categoria) {
         const mapaCategorias = {
             'PALABRA_RESERVADA': 'category-keyword',
@@ -186,6 +255,12 @@ func main() {
         return mapaCategorias[categoria] || 'category-delimiter';
     }
 
+    /**
+     * Formatea el nombre de una categoría
+     * @private
+     * @param {string} categoria - Categoría a formatear
+     * @returns {string}
+     */
     formatearCategoria(categoria) {
         return categoria
             .split('_')
@@ -193,12 +268,23 @@ func main() {
             .join(' ');
     }
 
+    /**
+     * Escapa caracteres HTML
+     * @private
+     * @param {string} texto - Texto a escapar
+     * @returns {string}
+     */
     escaparHtml(texto) {
         const div = document.createElement('div');
         div.textContent = texto;
         return div.innerHTML;
     }
 
+    /**
+     * Muestra los errores encontrados
+     * @private
+     * @param {Array} errores - Lista de errores
+     */
     mostrarErrores(errores) {
         if (errores.length === 0) {
             this.contenedorErrores.style.display = 'none';
@@ -221,6 +307,11 @@ func main() {
         });
     }
 
+    /**
+     * Muestra las estadísticas del análisis
+     * @private
+     * @param {Object} estadisticas - Estadísticas
+     */
     mostrarEstadisticas(estadisticas) {
         this.contenedorEstadisticas.style.display = 'grid';
         this.totalTokens.textContent = estadisticas.totalTokens;
@@ -228,6 +319,10 @@ func main() {
         this.totalCategorias.textContent = estadisticas.totalCategorias;
     }
 
+    /**
+     * Muestra el estado vacío de la tabla
+     * @private
+     */
     mostrarEstadoVacio() {
         this.cuerpoTokens.innerHTML = `
             <tr class="empty-state">
@@ -238,6 +333,10 @@ func main() {
         this.contenedorEstadisticas.style.display = 'none';
     }
 
+    /**
+     * Aplica el filtro seleccionado a los tokens
+     * @private
+     */
     aplicarFiltro() {
         const valorFiltro = this.filtroCategoria.value;
 
@@ -250,6 +349,8 @@ func main() {
     }
 }
 
+
+// Inicializar la aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     new Aplicacion();
 });
