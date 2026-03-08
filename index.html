@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Léxico GO</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header" style="position: relative;">
+            <h1>Analizador Léxico para GO</h1>
+            <p class="subtitle">Análisis de tokens basado en autómatas finitos deterministas</p>
+            <img src=https://go.dev/images/gophers/graduate-colorized.svg
+                 alt="Go Gopher" 
+                 class="gopher-mascot"
+                 style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); height: 100px;">
+        </header>
+
+        <main class="main-content">
+            <section class="editor-section">
+                <div class="section-header">
+                    <h2>Editor de Código</h2>
+                    <div class="actions">
+                        <button id="clearBtn" class="btn btn-secondary">Limpiar</button>
+                        <button id="analyzeBtn" class="btn btn-primary">Analizar</button>
+                    </div>
+                </div>
+                <textarea 
+                    id="codeInput" 
+                    class="code-editor" 
+                    placeholder="Escribe tu código GO aquí..."
+                    spellcheck="false"
+                ></textarea>
+                <div class="editor-info">
+                    <span id="lineCount">Líneas: 1</span>
+                    <span id="charCount">Caracteres: 0</span>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <div class="section-header">
+                    <h2>Resultados del Análisis</h2>
+                    <div class="filter-controls">
+                        <select id="filterCategory" class="filter-select">
+                            <option value="all">Todas las categorías</option>
+                            <option value="error">Solo errores</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="errorContainer" class="error-container" style="display: none;"></div>
+                
+                <div class="table-container">
+                    <table id="tokensTable" class="tokens-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Lexema</th>
+                                <th>Categoría</th>
+                                <th>Línea</th>
+                                <th>Columna</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokensBody">
+                            <tr class="empty-state">
+                                <td colspan="5">No hay tokens analizados. Escribe código y presiona "Analizar".</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="stats-container" id="statsContainer" style="display: none;">
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalTokens">0</span>
+                        <span class="stat-label">Total de Tokens</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalErrors">0</span>
+                        <span class="stat-label">Errores</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="totalCategories">0</span>
+                        <span class="stat-label">Categorías</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Analizador Léxico GO - Todos los derechos reservados</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
